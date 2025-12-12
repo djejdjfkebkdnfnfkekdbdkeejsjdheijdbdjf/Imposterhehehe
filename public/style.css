@@ -1,0 +1,8 @@
+body {
+    background-color: azure;
+    color: black;
+}
+
+table, tr, th, td {
+    border: 1px solid black;
+}
