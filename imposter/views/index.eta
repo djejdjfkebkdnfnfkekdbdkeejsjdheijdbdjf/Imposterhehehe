@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ord</title>
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <h1>Ord</h1>
+
+
+    <!-- <table>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+        </tr>
+        <% for (let word of data.words) { %>
+            <tr>
+                <td>
+                    <%= word[0] %>
+                </td>
+                <td>
+                    <%= word[1] %>
+                </td>
+            </tr>
+            <% } %>
+    </table> -->
+
+    <hr>
+
+    <form method='post'>
+        <p><label>Ord: <input name='word'></label></p>
+        <p><button name='insert'>Infoga (ange ord)</button></p>
+        <p><button name='remove'>Ta bort (ange ord)</button></p>
+    </form>
+    <form method='post'>
+        <p><label>Antal spelare: <input name="spelare" type="number"></label></p>
+        <p><button name="spela">Starta spelet (Ange antal spelare)</button></p>
+    </form>
+</body>
+
+</html>
