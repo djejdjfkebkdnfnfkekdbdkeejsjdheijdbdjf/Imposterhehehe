@@ -12,7 +12,7 @@ const game = new Eta({
 });
 
 
-let sqldb = new DB("words.db");
+let sqldb = new DB("words3.db");
 
 Deno.serve(async (request) => {
     const headers = new Headers();
