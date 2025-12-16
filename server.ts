@@ -12,7 +12,7 @@ const game = new Eta({
 });
 
 
-const sqldb = new DB("words.db");
+let sqldb = new DB("words.db");
 
 Deno.serve(async (request) => {
     const headers = new Headers();
@@ -25,72 +25,85 @@ Deno.serve(async (request) => {
     const url = new URL(request.url);
 
     switch (url.pathname) {
-        case "/": {
-            if (formData.has("insert")) {
-                const word = formData.get("word") as string;
+        case "/egon": {
+            sqldb = new DB("words2.db");
+            break;
+        } 
+        case "/viktor": {
+            sqldb = new DB("words3.db")
+            break;
+        }
+        
+    }
 
-                sqldb.query("INSERT INTO word (word) VALUES (?)", [
-                    word,
+    // switch (url.pathname) {
+    //     case "/": {
+    if (formData.has("insert")) {
+
+        const word = formData.get("word") as string;
+
+        sqldb.query("INSERT INTO word (word) VALUES (?)", [
+            word,
+        ]);
+    }
+    if (formData.has("remove")) {
+        const word = formData.get("word") as string
+
+        sqldb.query("DELETE FROM word WHERE word = (?)", [
+            word
+        ]);
+    }
+
+    const words = sqldb.query(
+        "SELECT * FROM word",
+    );
+
+    if (formData.has("spela")) {
+        const players = +(formData.get("spelare") as string);
+
+        const secretword = sqldb.query(
+            "SELECT word FROM word ORDER BY RANDOM() LIMIT 1",
+        );
+
+        sqldb.query("DELETE FROM players;");
+
+        const imposter = Math.floor(Math.random() * players);
+        const startingplayer = Math.floor(Math.random() * players + 1);
+
+        for (let index = 0; index < players; index++) {
+            if (index != imposter) {
+                sqldb.query("INSERT INTO players VALUES (?, ?)", [
+                    index,
+                    String(secretword[0]),
                 ]);
-            }
-            if (formData.has("remove")) {
-                const word = formData.get("word") as string
-
-                sqldb.query("DELETE FROM word WHERE word = (?)", [
-                    word
-                ]);
-            }
-
-            const words = sqldb.query(
-                "SELECT * FROM word",
-            );
-
-            if (formData.has("spela")) {
-                const players = +(formData.get("spelare") as string);
-
-                const secretword = sqldb.query(
-                    "SELECT word FROM word ORDER BY RANDOM() LIMIT 1",
-                );
-                
-                sqldb.query("DELETE FROM players;");
-                
-                const imposter = Math.floor(Math.random() * players);
-                const startingplayer = Math.floor(Math.random() * players + 1);
-                
-                for (let index = 0; index < players; index++) {
-                    if (index != imposter) {
-                        sqldb.query("INSERT INTO players VALUES (?, ?)", [
-                            index,
-                            String(secretword[0]),
-                        ]);
-                    } else {
-                        sqldb.query(
-                            "INSERT INTO players VALUES (?, 'Imposter ')",
-                            [
-                                index,
-                            ],
-                            );
-                        }
-                    }
-                    
-                    const spelarord = sqldb.query(
-                        "SELECT * FROM players",
-                        )
-                        // const startingplayer = Math.floor(Math.random() * players);
-                return new Response(
-                    game.render("index.eta", { words, secretword, players, spelarord, startingplayer }),
-                    {
-                        headers,
-                    },
-                );
-
             } else {
-                return new Response(eta.render("index.eta", { words }), {
-                    headers,
-                });
+                sqldb.query(
+                    "INSERT INTO players VALUES (?, 'Imposter ')",
+                    [
+                        index,
+                    ],
+                );
             }
         }
+
+        const spelarord = sqldb.query(
+            "SELECT * FROM players",
+        )
+        // const startingplayer = Math.floor(Math.random() * players);
+        return new Response(
+            game.render("index.eta", { words, secretword, players, spelarord, startingplayer }),
+            {
+                headers,
+            },
+        );
+
+    } else {
+        return new Response(eta.render("index.eta", { words }), {
+            headers,
+        });
     }
+    //     }
+    // }
 
     return serveDir(request, {
         fsRoot: "public",
