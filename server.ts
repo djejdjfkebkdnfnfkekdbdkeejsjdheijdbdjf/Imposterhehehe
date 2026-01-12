@@ -12,7 +12,7 @@ const game = new Eta({
 });
 
 
-const sqldb = new DB("words.db");
+let sqldb = new DB("words.db");
 
 Deno.serve(async (request) => {
     const headers = new Headers();
@@ -23,6 +23,12 @@ Deno.serve(async (request) => {
         : new FormData();
 
     const url = new URL(request.url);
+    if (url.pathname == "egon") {
+        sqldb = new DB("words2.db");
+    }
+    if (url.pathname == "viktor") {
+        sqldb = new DB("words3.db");
+    }
 
     switch (url.pathname) {
         case "/": {
@@ -51,12 +57,12 @@ Deno.serve(async (request) => {
                 const secretword = sqldb.query(
                     "SELECT word FROM word ORDER BY RANDOM() LIMIT 1",
                 );
-                
+
                 sqldb.query("DELETE FROM players;");
-                
+
                 const imposter = Math.floor(Math.random() * players);
                 const startingplayer = Math.floor(Math.random() * players + 1);
-                
+
                 for (let index = 0; index < players; index++) {
                     if (index != imposter) {
                         sqldb.query("INSERT INTO players VALUES (?, ?)", [
@@ -69,14 +75,14 @@ Deno.serve(async (request) => {
                             [
                                 index,
                             ],
-                            );
-                        }
+                        );
                     }
-                    
-                    const spelarord = sqldb.query(
-                        "SELECT * FROM players",
-                        )
-                        // const startingplayer = Math.floor(Math.random() * players);
+                }
+
+                const spelarord = sqldb.query(
+                    "SELECT * FROM players",
+                )
+                // const startingplayer = Math.floor(Math.random() * players);
                 return new Response(
                     game.render("index.eta", { words, secretword, players, spelarord, startingplayer }),
                     {
