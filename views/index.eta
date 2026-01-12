@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ord</title>
+    <title>Imposter</title>
 
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/public/style.css">
+    
 </head>
 
 <body>
-    <h1>Ord</h1>
+    <h1>Imposter2</h1>
 
 
-    <!-- <table>
+    <table>
         <tr>
             <th>id</th>
             <th>name</th>
@@ -27,14 +28,14 @@
                 </td>
             </tr>
             <% } %>
-    </table> -->
+    </table>
 
     <hr>
 
     <form method='post'>
-        <p><label>Ord: <input name='word'></label></p>
-        <p><button name='insert'>Infoga (ange ord)</button></p>
-        <p><button name='remove'>Ta bort (ange ord)</button></p>
+        <p><label>Skriv in och ta bort ord: <input name='word' value=""></label></p>
+        <p><button name='insert'>Lägg till ord (ange ord)</button></p>
+        <p><button name='remove'>Ta bort ord (ange ord)</button></p>
     </form>
     <form method='post'>
         <p><label>Antal spelare: <input name="spelare" type="number"></label></p>

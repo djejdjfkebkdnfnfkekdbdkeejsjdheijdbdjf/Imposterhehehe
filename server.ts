@@ -12,7 +12,7 @@ const game = new Eta({
 });
 
 
-let sqldb = new DB("words3.db");
+let sqldb = new DB("words.db");
 
 Deno.serve(async (request) => {
     const headers = new Headers();
@@ -28,12 +28,12 @@ Deno.serve(async (request) => {
         case "/egon": {
             sqldb = new DB("words2.db");
             break;
-        } 
+        }
         case "/viktor": {
             sqldb = new DB("words3.db")
             break;
         }
-        
+
     }
 
     // switch (url.pathname) {
