@@ -12,7 +12,8 @@ const game = new Eta({
 });
 
 
-let sqldb = new DB("words.db");
+let sqldb = new DB("words2.db");
+
 
 Deno.serve(async (request) => {
     const headers = new Headers();
@@ -23,13 +24,44 @@ Deno.serve(async (request) => {
         : new FormData();
 
     const url = new URL(request.url);
-    if (url.pathname == "egon") {
-        sqldb = new DB("words2.db");
-    }
-    if (url.pathname == "viktor") {
-        sqldb = new DB("words3.db");
-    }
 
+    // if (url.pathname == "/egon") {
+    //     sqldb = new DB("words.db");
+    //     url.pathname = "/"
+    // }
+    // if (url.pathname == "/viktor") {
+    //     sqldb = new DB("words3.db");
+    //     url.pathname = "/"
+    // }
+    if (url.pathname != "/") {
+        sqldb = new DB("database.db")
+        let pathname_without_slash = url.pathname.slice(1)
+
+
+
+
+        const wanteddb = sqldb.query("SELECT * FROM databases WHERE database LIKE ('%' || ?)", [
+            pathname_without_slash
+        ])
+        console.log(wanteddb);
+        console.log(url.pathname);
+
+        url.pathname = "/"
+        if (wanteddb == "") {
+            sqldb = new DB("database.db")
+            sqldb.query("INSERT INTO databases (database) VALUES (?)", [
+                pathname_without_slash
+            ])
+            sqldb = new DB(pathname_without_slash + ".db")
+            sqldb.query("CREATE TABLE word (ID INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT)")
+            sqldb.query("CREATE TABLE players(pnr INTEGER PRIMARY KEY, word TEXT)")
+        }
+        sqldb = new DB(pathname_without_slash + ".db")
+
+
+    }
+    // sqldb = new DB("words.db")
+    // console.log(sqldb);
     switch (url.pathname) {
         case "/": {
             if (formData.has("insert")) {
